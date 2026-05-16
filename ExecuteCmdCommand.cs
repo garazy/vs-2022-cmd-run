@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Task = System.Threading.Tasks.Task;
 
 namespace CmdRun
@@ -130,11 +131,44 @@ namespace CmdRun
                     return null;
                 }
 
-                EnvDTE.Property fullPathProperty = selectedItem.ProjectItem.Properties.Item("FullPath");
-                return fullPathProperty?.Value?.ToString();
+                return GetProjectItemFileName(selectedItem.ProjectItem);
             }
 
             return null;
+        }
+
+        private static string GetProjectItemFileName(EnvDTE.ProjectItem projectItem)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            try
+            {
+                string fileName = projectItem.FileNames[1];
+                if (!string.IsNullOrWhiteSpace(fileName))
+                {
+                    return fileName;
+                }
+            }
+            catch (ArgumentException)
+            {
+            }
+            catch (COMException)
+            {
+            }
+
+            try
+            {
+                EnvDTE.Property fullPathProperty = projectItem.Properties.Item("FullPath");
+                return fullPathProperty?.Value?.ToString();
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+            catch (COMException)
+            {
+                return null;
+            }
         }
     }
 }

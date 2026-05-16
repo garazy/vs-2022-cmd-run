@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -23,9 +24,10 @@ namespace CmdRun
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration ( UseManagedResourcesOnly = true , AllowsBackgroundLoading = true )]
-    [Guid ( CmdRunPackage.PackageGuidString )]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [Guid(CmdRunPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     public sealed class CmdRunPackage : AsyncPackage
     {
         /// <summary>
@@ -35,7 +37,6 @@ namespace CmdRun
 
         #region Package Members
 
-   
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -46,7 +47,7 @@ namespace CmdRun
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-        
+
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

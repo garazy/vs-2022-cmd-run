@@ -86,9 +86,12 @@ namespace CmdRun
                     FileName = cmdExe,
                     Arguments = "/k call \"" + fileInfo.FullName + "\"",
                     WorkingDirectory = fileInfo.DirectoryName,
-                    UseShellExecute = true,
+                    UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Normal
                 };
+
+                startInfo.EnvironmentVariables.Remove("VisualStudioVersion");
+                startInfo.EnvironmentVariables.Remove("VSToolsPath");
 
                 Process.Start(startInfo);
             }

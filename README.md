@@ -1,3 +1,7 @@
+# Deprecated
+
+This extension is deprecated. Use `super_vs` instead: https://github.com/garazy/super_vs
+
 # vs-2022-cmd-run
 
 Adds an `Execute CMD` menu item to Visual Studio 2022 Solution Explorer for `.cmd` files.
